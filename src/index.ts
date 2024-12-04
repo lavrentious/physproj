@@ -1,105 +1,85 @@
-import * as PIXI from "pixi.js";
-import { Application } from "pixi.js";
+import { Application, Assets, Sprite } from "pixi.js";
+import itmoLogo from "./assets/itmo.png";
 import { config } from "./config";
-import { Ball } from "./entities/ball";
 import { Board } from "./entities/board";
+import { PlacementService, PlacementType } from "./services/placement_service";
 import { CollisionResolver } from "./utils/collision_resolver";
-import { poolColors } from "./utils/colors";
-import { meterToPx, pxToMeter } from "./utils/px";
-import { Vector2D } from "./utils/vector2d";
+import { meterToPx } from "./utils/px";
 
 async function main() {
-  // init app
-  const app = new Application();
-  function addLabels() {
-    // add labels on canvas that show meters
-    const labelStyle = new PIXI.TextStyle({
-      fontFamily: "Arial",
-      fontSize: 24,
-      fill: "#ffffff",
-      stroke: "#000000",
-    });
-    const labelLeft = new PIXI.Text("0m", labelStyle);
-    labelLeft.anchor.set(0, 0.5);
-    labelLeft.x = 10;
-    labelLeft.y = app.canvas.height / 2;
-    app.stage.addChild(labelLeft);
-
-    const labelRight = new PIXI.Text(
-      `${pxToMeter(app.canvas.width).toFixed(1)}m`,
-      labelStyle,
-    );
-    labelRight.anchor.set(1, 0.5);
-    labelRight.x = app.canvas.width - 10;
-    labelRight.y = app.canvas.height / 2;
-    app.stage.addChild(labelRight);
+  // init html
+  const pixiContainer = document.getElementById("pixi");
+  if (!pixiContainer) {
+    throw new Error("Parent block not found");
   }
-  await app.init({ background: "#999999", resizeTo: window });
-  app.ticker.maxFPS = 120;
-  document.body.appendChild(app.canvas);
 
-  const ball = new Ball(
-    1,
-    new Vector2D(
-      pxToMeter(app.canvas.width / 2) - 0.3,
-      pxToMeter(app.canvas.height / 2) - 0.025,
-    ),
-    config.BALL_MASS_KG,
-    poolColors.balls[0],
-    config.BALL_RADIUS_M,
-  );
+  // Button logic
+  document
+    .getElementById("switcher-button")
+    ?.addEventListener("click", function (event) {
+      event.preventDefault();
+      config.SHOW_PHYSICS = !config.SHOW_PHYSICS;
+      this.classList.toggle("btn-success", config.SHOW_PHYSICS);
+      this.classList.toggle("btn-danger", !config.SHOW_PHYSICS);
+    });
 
-  const ball2 = new Ball(
-    2,
-    new Vector2D(
-      pxToMeter(app.canvas.width / 2) + 0.2,
-      pxToMeter(app.canvas.height / 2),
-    ),
-    config.BALL_MASS_KG,
-    poolColors.balls[0],
-    config.BALL_RADIUS_M,
-  );
+  // App init
+  const app = new Application();
+  await app.init({ background: "#999999", resizeTo: pixiContainer });
+  app.ticker.maxFPS = 60;
+  pixiContainer.appendChild(app.canvas);
 
-  ball.velocity = new Vector2D(-0.01, 0.0);
-  ball2.velocity = new Vector2D(-0.025, -0.001);
-
-  const boardWidth = 2.84; // meters
-  const boardHeight = 1.42; // meters
+  // Board init
+  const boardWidth = config.BOARD_WIDTH_M;
+  const boardHeight = config.BOARD_HEIGHT_M;
   const board = new Board(
     boardWidth,
     boardHeight,
     (app.canvas.width - meterToPx(boardWidth)) / 2,
     (app.canvas.height - meterToPx(boardHeight)) / 2,
   );
-
   app.stage.addChild(board.getGraphics());
-  app.stage.addChild(ball.getGraphics());
-  app.stage.addChild(ball2.getGraphics());
 
+  // Add board background
+  const itmoTexture = await Assets.load(itmoLogo);
+  const background = new Sprite(itmoTexture);
+  background.x = board.getLeftWallX();
+  background.y = board.getTopWallY();
+
+  const scalingFactor = 0.4;
+  const originalBackgroundWidth = background.width;
+  const originalBackgroundHeight = background.height;
+  const newBackgroundWidth = meterToPx(board.getWidth()) * scalingFactor;
+  const newBackgroundHeight =
+    (newBackgroundWidth / originalBackgroundWidth) * originalBackgroundHeight;
+
+  background.width = newBackgroundWidth;
+  background.height = newBackgroundHeight;
+  background.x =
+    board.getLeftWallX() + (meterToPx(board.getWidth()) - background.width) / 2;
+  background.y =
+    board.getTopWallY() +
+    (meterToPx(board.getHeight()) - background.height) / 2 -
+    15;
+  board.getGraphics().addChild(background);
+
+  // Placing balls on board
+  const placementService = new PlacementService(board);
+  const ballsList = placementService.getPlacement(PlacementType.TRIANGLE, 36);
+  board.addBalls(ballsList);
+
+  // Main loop
   const collisionResolver = new CollisionResolver();
-
   app.ticker.add((time) => {
-    ball.update(time.deltaTime);
-    ball2.update(time.deltaTime);
-
-    collisionResolver.resolveBallBoardCollision(
-      board,
-      [ball, ball2],
-      (ball, redirectionVector) => {
-        ball.velocity = new Vector2D(
-          redirectionVector.x * ball.velocity.x,
-          redirectionVector.y * ball.velocity.y,
-        );
-      },
-    );
-
-    collisionResolver.resolveBallsCollision([ball, ball2], (ball1, ball2) => {
-      console.log("collided");
-      ball1.collide(ball2);
+    // Updaing balls every frame
+    ballsList.forEach((ball) => {
+      ball.update(time.deltaTime);
     });
-  });
 
-  addLabels();
+    // Resoling collisions
+    collisionResolver.resolveBallBoardCollision(board, ballsList);
+    collisionResolver.resolveBallsCollision(ballsList);
+  });
 }
 
 main();

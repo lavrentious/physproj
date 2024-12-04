@@ -1,24 +1,22 @@
 import { ColorSource, Graphics } from "pixi.js";
 import { config } from "../config";
-import { rotate, rotate2 } from "../utils/math_funcs";
+import { rotate } from "../utils/math_funcs";
 import { meterToPx } from "../utils/px";
 import { Vector2D } from "../utils/vector2d";
 
 export class Ball {
   private graphics: Graphics;
   public velocity: Vector2D;
+  public id: number;
+  public radius: number;
 
   constructor(
-    public id: number,
-    // physics
     public position: Vector2D,
-    public mass: number, //  TODO: move to config
-    // ball
     public color: ColorSource,
-    public radius: number,
   ) {
-    this.graphics = new Graphics();
-    this.velocity = new Vector2D(0.05, 0.05);
+    this.id = Math.round(Math.random() * 10e6);
+    this.radius = config.BALL_RADIUS_M;
+    this.velocity = new Vector2D(0.0, 0.0);
     this.graphics = new Graphics()
       .circle(0, 0, meterToPx(this.radius))
       .fill(this.color);
@@ -27,14 +25,33 @@ export class Ball {
   }
 
   render() {
-    // console.log(
-    //   "render ball at ",
-    //   meterToPx(this.position.x),
-    //   meterToPx(this.position.y),
-    // );
-
     this.graphics.x = meterToPx(this.position.x);
     this.graphics.y = meterToPx(this.position.y);
+    if (config.SHOW_PHYSICS){
+      this.renderVelocity();
+    }
+    else{
+      this.clearVelocity();
+    }
+  }
+
+  clearVelocity(){
+    this.graphics.children.forEach(child => {
+      child.destroy();
+    });
+  }
+
+  renderVelocity(){
+    this.clearVelocity();
+    let velocityPreview = new Graphics()
+    .moveTo(0, 0)
+    .lineTo(meterToPx(this.velocity.x) * 3, meterToPx(this.velocity.y) * 3)
+    .stroke({
+      color: 0x000000,
+      width: 1,
+      alignment: 0,
+    }); 
+    this.graphics.addChild(velocityPreview);
   }
 
   update(deltaTime: number) {
@@ -74,11 +91,6 @@ export class Ball {
 
     const myTmp = rotate(this.velocity, alpha);
     const otherTmp = rotate(other.velocity, alpha);
-
-    console.log("-----------------");
-    console.log(rotate(this.velocity, alpha));
-    console.log(rotate2(this.velocity, alpha));
-    console.log("-----------------");
 
     const t = myTmp.x;
     myTmp.x = otherTmp.x;
