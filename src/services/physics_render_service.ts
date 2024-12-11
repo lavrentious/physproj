@@ -3,10 +3,6 @@ import { Ball } from "../entities/ball";
 import { meterToPx } from "../utils/px";
 
 export class PhysicsRenderService {
-    constructor(private balls: Ball[]) {
-        
-    }
-    
     clearVelocity(ball: Ball){
         ball.getGraphics().children.forEach(child => {
           child.destroy();
