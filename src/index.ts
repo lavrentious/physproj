@@ -6,6 +6,7 @@ import { Board } from "./entities/board";
 import { PlacementService, PlacementType } from "./services/placement_service";
 import { CollisionResolver } from "./utils/collision_resolver";
 import { meterToPx } from "./utils/px";
+import { App } from "./App";
 
 function createBalls(board: Board) {
   const placementService = new PlacementService(board);
@@ -61,20 +62,17 @@ async function main() {
     .getElementById("switcher-button")
     ?.addEventListener("click", function (event) {
       event.preventDefault();
-      config.SHOW_PHYSICS = !config.SHOW_PHYSICS;
-      this.classList.toggle("btn-success", config.SHOW_PHYSICS);
-      this.classList.toggle("btn-danger", !config.SHOW_PHYSICS);
+      app.togglePhysics();
+      this.classList.toggle("btn-success", app.getPhysics());
+      this.classList.toggle("btn-danger", !app.getPhysics());
     });
   
   // Pause-Button logic
-  let isPause = false;
   document
     .getElementById("pause-button")
     ?.addEventListener("click", function (event) {
       event.preventDefault();
-      if (!isPause) app.ticker.stop();
-      else app.ticker.start();
-      isPause = !isPause;
+      app.tooglePause();
     });
   
   // Restart-Button logic
@@ -82,44 +80,13 @@ async function main() {
     .getElementById("restart-button")
     ?.addEventListener("click", function (event) {
       event.preventDefault();
-      board.removeBalls();
-      const ballsList = createBalls(board);
-      board.addBalls(ballsList);
+      app.restart();
     });
 
-
-  // App init
-  const app = new Application();
-  await app.init({ background: "#999999", resizeTo: pixiContainer });
-  app.ticker.maxFPS = 60;
-  pixiContainer.appendChild(app.canvas);
-
-  // Board init
-  const board = await createBoard(app);
-
-  // Placing balls on board
-  const ballsList = createBalls(board);
-  board.addBalls(ballsList);
-
-  app.stage.addChild(board.getGraphics());
-
-  // Main loop
-  const collisionResolver = new CollisionResolver();
-  app.ticker.add((time) => {
-    // Updaing balls every frame
-    board.getBallsList().forEach((ball) => {
-      ball.update(time.deltaTime);
-    });
-
-    // Resoling collisions
-    collisionResolver.resolveBallBoardCollision(board, board.getBallsList());
-    collisionResolver.resolveBallsCollision(board.getBallsList());
-  });
-
-  let gui = new dat.GUI({ autoPlace: false });
-  let customContainer = document.getElementById('dat-gui-container');
-  if (customContainer) customContainer.appendChild(gui.domElement);
-  // Define control elements here
+    const app = new App();
+    await app.init(pixiContainer);
+    app.run();
+    console.log(app.getBoard());
 }
 
 main();

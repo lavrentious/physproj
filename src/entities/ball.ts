@@ -27,39 +27,14 @@ export class Ball {
   render() {
     this.graphics.x = meterToPx(this.position.x);
     this.graphics.y = meterToPx(this.position.y);
-    if (config.SHOW_PHYSICS){
-      this.renderVelocity();
-    }
-    else{
-      this.clearVelocity();
-    }
   }
 
-  clearVelocity(){
-    this.graphics.children.forEach(child => {
-      child.destroy();
-    });
-  }
-
-  renderVelocity(){
-    this.clearVelocity();
-    let velocityPreview = new Graphics()
-    .moveTo(0, 0)
-    .lineTo(meterToPx(this.velocity.x) * 3, meterToPx(this.velocity.y) * 3)
-    .stroke({
-      color: 0x000000,
-      width: 1,
-      alignment: 0,
-    }); 
-    this.graphics.addChild(velocityPreview);
-  }
-
+  
   update(deltaTime: number) {
     if (this.velocity.magnitude() < config.BALL_VELOCITY_THRESHOLD) {
       this.velocity = new Vector2D(0, 0);
       return;
     }
-    // console.log("updating, velocity = ", this.velocity.toString());
 
     const deltaVelocity = this.velocity
       .normalize()
