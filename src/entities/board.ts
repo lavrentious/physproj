@@ -4,6 +4,7 @@ import { poolColors, strikeColor } from "../utils/colors";
 import { meterToPx, pxToMeter } from "../utils/px";
 import { Vector2D } from "../utils/vector2d";
 import { Ball } from "./ball";
+import { Hole } from "./hole";
 
 export class Board {
   private width: number;
@@ -14,6 +15,7 @@ export class Board {
   private leftTopYPx: number;
 
   balls: Set<Ball>;
+  holes: Hole[];
 
   // drag
   private dragStart: Vector2D | null = null; // in pixels
@@ -34,6 +36,32 @@ export class Board {
     this.height = height;
 
     this.balls = new Set<Ball>();
+    this.holes = [
+      new Hole(
+        new Vector2D(pxToMeter(this.leftTopXPx), pxToMeter(this.leftTopYPx)),
+        config.HOLE_RADIUS_M,
+      ),
+      new Hole(
+        new Vector2D(pxToMeter(this.leftTopXPx) + this.width, pxToMeter(this.leftTopYPx) + this.height),
+        config.HOLE_RADIUS_M,
+      ),
+      new Hole(
+        new Vector2D(pxToMeter(this.leftTopXPx), pxToMeter(this.leftTopYPx) + this.height),
+        config.HOLE_RADIUS_M,
+      ),
+      new Hole(
+        new Vector2D(pxToMeter(this.leftTopXPx) + this.width, pxToMeter(this.leftTopYPx)),
+        config.HOLE_RADIUS_M,
+      ),
+      new Hole(
+        new Vector2D(pxToMeter(this.leftTopXPx) + this.width / 2, pxToMeter(this.leftTopYPx + 8) + this.height),
+        config.HOLE_RADIUS_M,
+      ),
+      new Hole(
+        new Vector2D(pxToMeter(this.leftTopXPx) + this.width / 2, pxToMeter(this.leftTopYPx - 8)),
+        config.HOLE_RADIUS_M,
+      )
+    ];
 
     this.graphics = new Graphics()
       .rect(
@@ -44,15 +72,31 @@ export class Board {
       )
       .stroke({
         color: poolColors.tableBorder,
-        width: 15,
+        width: 16,
         alignment: 0,
       })
       .fill(poolColors.table);
+
+    // draw holes
+      for (const hole of this.holes) {
+        this.graphics = this.graphics
+        .circle(meterToPx(hole.coords.x), meterToPx(hole.coords.y), meterToPx(hole.radius))
+        .fill(poolColors.tableBorder);
+      }
 
     this.graphics.interactive = true;
     this.graphics.on("pointermove", (event) => this.onDragMove(event));
     this.graphics.on("pointerup", (event) => this.onDragEnd(event));
     this.graphics.on("pointerleave", () => this.dragReset());
+  }
+
+  processHoleCollision(ball: Ball) {
+    for (const hole of this.holes) {
+      // console.log(Math.hypot(hole.coords.x - ball.position.x, hole.coords.y - ball.position.y));
+      if (Math.hypot(hole.coords.x - ball.position.x, hole.coords.y - ball.position.y) < hole.radius) {
+        this.removeBall(ball);
+      }
+    }
   }
 
   getLeftWallX() {

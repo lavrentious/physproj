@@ -10,7 +10,7 @@ export const config = {
   BALL_FRICTION_COEF: 0.02,
   BALL_VELOCITY_THRESHOLD: 1e-3,
   // BOARD
-  HOLE_RADIUS_M: 0.036,
+  HOLE_RADIUS_M: 0.072,
   BOARD_WIDTH_M: 2.84,
   BOARD_HEIGHT_M: 1.42, 
   // Drag

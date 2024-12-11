@@ -54,6 +54,12 @@ export class CollisionResolver {
     }
   }
 
+  public resolveBallHoleCollision(board: Board, data: Array<Ball>): void {
+    for (let i = 0; i < data.length; i++) {
+      board.processHoleCollision(data[i]);
+    }
+  }
+
   public clearCollisionsLookup(): void {
     this.collisionsLookup.clear();
   }

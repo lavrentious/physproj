@@ -91,7 +91,12 @@ export class App {
         
             // Resoling collisions
             this.collisionResolver.resolveBallBoardCollision(this.board, this.board.getBallsList());
+            this.collisionResolver.resolveBallHoleCollision(this.board, this.board.getBallsList());
             this.collisionResolver.resolveBallsCollision(this.board.getBallsList());
+
+            if (this.board.getBallsList().length === 0) {
+                this.restart();
+            }
         });
     }
 
