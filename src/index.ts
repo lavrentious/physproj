@@ -1,4 +1,5 @@
 import { Application, Assets, Sprite } from "pixi.js";
+import * as dat from 'dat.gui'
 import itmoLogo from "./assets/itmo.png";
 import { config } from "./config";
 import { Board } from "./entities/board";
@@ -23,7 +24,7 @@ async function main() {
       this.classList.toggle("btn-danger", !config.SHOW_PHYSICS);
     });
   
-    let isPause = false;
+  let isPause = false;
   document
     .getElementById("pause-button")
     ?.addEventListener("click", function (event) {
@@ -90,6 +91,11 @@ async function main() {
     collisionResolver.resolveBallBoardCollision(board, ballsList);
     collisionResolver.resolveBallsCollision(ballsList);
   });
+
+  let gui = new dat.GUI({ autoPlace: false });
+  let customContainer = document.getElementById('dat-gui-container');
+  if (customContainer) customContainer.appendChild(gui.domElement);
+  // Define control elements here
 }
 
 main();
