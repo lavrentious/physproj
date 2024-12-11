@@ -22,6 +22,16 @@ async function main() {
       this.classList.toggle("btn-success", config.SHOW_PHYSICS);
       this.classList.toggle("btn-danger", !config.SHOW_PHYSICS);
     });
+  
+    let isPause = false;
+  document
+    .getElementById("pause-button")
+    ?.addEventListener("click", function (event) {
+      event.preventDefault();
+      if (!isPause) app.ticker.stop();
+      else app.ticker.start();
+      isPause = !isPause;
+    });
 
   // App init
   const app = new Application();
@@ -65,7 +75,7 @@ async function main() {
 
   // Placing balls on board
   const placementService = new PlacementService(board);
-  const ballsList = placementService.getPlacement(PlacementType.TRIANGLE, 36);
+  const ballsList = placementService.getPlacement(PlacementType.TRIANGLE, 10);
   board.addBalls(ballsList);
 
   // Main loop

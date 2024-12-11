@@ -1,12 +1,40 @@
+* {
+  font-family: sans-serif;
+}
+
+*,
+*::before,
+*::after {
+  box-sizing: border-box;
+}
+
+main {
+  display: flex; /* Enable flexbox */
+  flex-direction: column; /* Stack children vertically */
+  height: 100vh; /* Full height of the viewport */
+}
+
 .np-container {
   display: flex;
   flex-direction: column;
   width: 100vw;
-  height: 100vh;
+  height: 100%;
 }
 
-.np-header {
-  flex-shrink: 0;
+.left-side-wrapper {
+  display: flex;
+  align-items: center;
+}
+
+.left-side-wrapper > * {
+  margin-left: 5px;
+}
+
+.content {
+  display: flex;
+  flex: 1; /* Take all remaining space */
+  background-color: #999999;
+  padding: 10px;
 }
 
 #pixi {
