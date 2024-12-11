@@ -100,6 +100,17 @@ export class Board {
     }
   }
 
+  removeBall(ball: Ball) {
+    this.balls.delete(ball);
+    this.graphics.removeChild(ball.getGraphics());
+  }
+
+  removeBalls() { 
+    this.balls.forEach((ball) => {
+      this.removeBall(ball);
+    })
+  }
+
   getBalls() {
     return this.balls;
   }

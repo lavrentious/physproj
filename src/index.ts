@@ -7,40 +7,13 @@ import { PlacementService, PlacementType } from "./services/placement_service";
 import { CollisionResolver } from "./utils/collision_resolver";
 import { meterToPx } from "./utils/px";
 
-async function main() {
-  // init html
-  const pixiContainer = document.getElementById("pixi");
-  if (!pixiContainer) {
-    throw new Error("Parent block not found");
-  }
+function createBalls(board: Board) {
+  const placementService = new PlacementService(board);
+  return placementService.getPlacement(PlacementType.TRIANGLE, 10);
+}
 
-  // Button logic
-  document
-    .getElementById("switcher-button")
-    ?.addEventListener("click", function (event) {
-      event.preventDefault();
-      config.SHOW_PHYSICS = !config.SHOW_PHYSICS;
-      this.classList.toggle("btn-success", config.SHOW_PHYSICS);
-      this.classList.toggle("btn-danger", !config.SHOW_PHYSICS);
-    });
-  
-  let isPause = false;
-  document
-    .getElementById("pause-button")
-    ?.addEventListener("click", function (event) {
-      event.preventDefault();
-      if (!isPause) app.ticker.stop();
-      else app.ticker.start();
-      isPause = !isPause;
-    });
-
-  // App init
-  const app = new Application();
-  await app.init({ background: "#999999", resizeTo: pixiContainer });
-  app.ticker.maxFPS = 60;
-  pixiContainer.appendChild(app.canvas);
-
-  // Board init
+async function createBoard(app: Application) {
+  // Init board
   const boardWidth = config.BOARD_WIDTH_M;
   const boardHeight = config.BOARD_HEIGHT_M;
   const board = new Board(
@@ -49,7 +22,6 @@ async function main() {
     (app.canvas.width - meterToPx(boardWidth)) / 2,
     (app.canvas.height - meterToPx(boardHeight)) / 2,
   );
-  app.stage.addChild(board.getGraphics());
 
   // Add board background
   const itmoTexture = await Assets.load(itmoLogo);
@@ -74,22 +46,74 @@ async function main() {
     15;
   board.getGraphics().addChild(background);
 
+  return board;  
+}
+
+async function main() {
+  // init html
+  const pixiContainer = document.getElementById("pixi");
+  if (!pixiContainer) {
+    throw new Error("Parent block not found");
+  }
+
+  // Physics-Button logic
+  document
+    .getElementById("switcher-button")
+    ?.addEventListener("click", function (event) {
+      event.preventDefault();
+      config.SHOW_PHYSICS = !config.SHOW_PHYSICS;
+      this.classList.toggle("btn-success", config.SHOW_PHYSICS);
+      this.classList.toggle("btn-danger", !config.SHOW_PHYSICS);
+    });
+  
+  // Pause-Button logic
+  let isPause = false;
+  document
+    .getElementById("pause-button")
+    ?.addEventListener("click", function (event) {
+      event.preventDefault();
+      if (!isPause) app.ticker.stop();
+      else app.ticker.start();
+      isPause = !isPause;
+    });
+  
+  // Restart-Button logic
+  document
+    .getElementById("restart-button")
+    ?.addEventListener("click", function (event) {
+      event.preventDefault();
+      board.removeBalls();
+      const ballsList = createBalls(board);
+      board.addBalls(ballsList);
+    });
+
+
+  // App init
+  const app = new Application();
+  await app.init({ background: "#999999", resizeTo: pixiContainer });
+  app.ticker.maxFPS = 60;
+  pixiContainer.appendChild(app.canvas);
+
+  // Board init
+  const board = await createBoard(app);
+
   // Placing balls on board
-  const placementService = new PlacementService(board);
-  const ballsList = placementService.getPlacement(PlacementType.TRIANGLE, 10);
+  const ballsList = createBalls(board);
   board.addBalls(ballsList);
+
+  app.stage.addChild(board.getGraphics());
 
   // Main loop
   const collisionResolver = new CollisionResolver();
   app.ticker.add((time) => {
     // Updaing balls every frame
-    ballsList.forEach((ball) => {
+    board.getBallsList().forEach((ball) => {
       ball.update(time.deltaTime);
     });
 
     // Resoling collisions
-    collisionResolver.resolveBallBoardCollision(board, ballsList);
-    collisionResolver.resolveBallsCollision(ballsList);
+    collisionResolver.resolveBallBoardCollision(board, board.getBallsList());
+    collisionResolver.resolveBallsCollision(board.getBallsList());
   });
 
   let gui = new dat.GUI({ autoPlace: false });
