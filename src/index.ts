@@ -56,6 +56,45 @@ async function main() {
       document.getElementById("pause-button")?.children[0].classList.toggle("bi-play-fill", app.getPause());
       document.getElementById("pause-button")?.children[0].classList.toggle("bi-pause", !app.getPause());
     });
+  
+    // Honey-Button logic
+    document
+      .getElementById("honey-button")
+      ?.addEventListener("click", function (event) {
+        event.preventDefault();
+        runtimeConfig.frictionCoef = 0.3;
+        app.setRuntimeConfig(runtimeConfig);
+        document.getElementById('close-offcanvas')?.click();
+        document.getElementById("pause-button")?.children[0].classList.toggle("bi-play-fill", app.getPause());
+        document.getElementById("pause-button")?.children[0].classList.toggle("bi-pause", !app.getPause());
+      });
+
+      // Ice-Button logic
+    document
+    .getElementById("ice-button")
+    ?.addEventListener("click", function (event) {
+      event.preventDefault();
+      runtimeConfig.frictionCoef = 0.002;
+      app.setRuntimeConfig(runtimeConfig);
+
+      
+
+      document.getElementById('close-offcanvas')?.click();
+      document.getElementById("pause-button")?.children[0].classList.toggle("bi-play-fill", app.getPause());
+      document.getElementById("pause-button")?.children[0].classList.toggle("bi-pause", !app.getPause());
+    });
+
+    // Table-Button logic
+    document
+      .getElementById("table-button")
+      ?.addEventListener("click", function (event) {
+        event.preventDefault();
+        runtimeConfig.frictionCoef = 0.02;
+        app.setRuntimeConfig(runtimeConfig);
+        document.getElementById('close-offcanvas')?.click();
+        document.getElementById("pause-button")?.children[0].classList.toggle("bi-play-fill", app.getPause());
+        document.getElementById("pause-button")?.children[0].classList.toggle("bi-pause", !app.getPause());
+      });
 
     const runtimeConfig = new RuntimeConfig();
             
