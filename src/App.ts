@@ -7,10 +7,12 @@ import itmoLogo from "./assets/itmo.png";
 import { meterToPx } from "./utils/px";
 import dat from "dat.gui";
 import { PhysicsRenderService } from "./services/physics_render_service";
+import { RuntimeConfig } from "./runtime_config";
 
 export class App {
     private application!: Application;
     private board!: Board;
+    private runtimeConfig!: RuntimeConfig;
     private placementService!: PlacementService;
     private collisionResolver!: CollisionResolver;
     private physicsRenderService!: PhysicsRenderService;
@@ -19,13 +21,14 @@ export class App {
 
     constructor() {}
 
-    async init(pixiContainer: HTMLElement) {
+    async init(pixiContainer: HTMLElement, runtime_config: RuntimeConfig = new RuntimeConfig()) {
         await this.initApplication(pixiContainer);
         await this.initBoard();
 
         this.placementService = new PlacementService(this.board);
         this.physicsRenderService = new PhysicsRenderService();
         this.collisionResolver = new CollisionResolver();
+        this.runtimeConfig = runtime_config;
 
         const ballsList = this.createBalls();
         this.board.addBalls(ballsList);
@@ -75,14 +78,14 @@ export class App {
     }
 
     createBalls() {
-        return this.placementService.getPlacement(PlacementType.TRIANGLE, 10);
+        return this.placementService.getPlacement(this.runtimeConfig.placementType, this.runtimeConfig.ballsNumber);
     }
 
     run() {
         this.application.ticker.add((time) => {
             // Updaing balls every frame
             this.board.getBallsList().forEach((ball) => {
-                ball.update(time.deltaTime);
+                ball.update(time.deltaTime, this.runtimeConfig.frictionCoef, this.runtimeConfig.G);
                 this.physicsRenderService.update(ball, this.showPhysics);
             });
         
@@ -141,5 +144,10 @@ export class App {
 
     getPause(){
         return this.isPause;
+    }
+
+    setRuntimeConfig(config: RuntimeConfig){
+        this.runtimeConfig = config;
+        this.restart();
     }
 }

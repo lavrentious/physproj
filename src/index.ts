@@ -9,48 +9,6 @@ import { meterToPx } from "./utils/px";
 import { App } from "./App";
 import { RuntimeConfig } from "./runtime_config";
 
-function createBalls(board: Board) {
-  const placementService = new PlacementService(board);
-  return placementService.getPlacement(PlacementType.TRIANGLE, 10);
-}
-
-async function createBoard(app: Application) {
-  // Init board
-  const boardWidth = config.BOARD_WIDTH_M;
-  const boardHeight = config.BOARD_HEIGHT_M;
-  const board = new Board(
-    boardWidth,
-    boardHeight,
-    (app.canvas.width - meterToPx(boardWidth)) / 2,
-    (app.canvas.height - meterToPx(boardHeight)) / 2,
-  );
-
-  // Add board background
-  const itmoTexture = await Assets.load(itmoLogo);
-  const background = new Sprite(itmoTexture);
-  background.x = board.getLeftWallX();
-  background.y = board.getTopWallY();
-
-  const scalingFactor = 0.4;
-  const originalBackgroundWidth = background.width;
-  const originalBackgroundHeight = background.height;
-  const newBackgroundWidth = meterToPx(board.getWidth()) * scalingFactor;
-  const newBackgroundHeight =
-    (newBackgroundWidth / originalBackgroundWidth) * originalBackgroundHeight;
-
-  background.width = newBackgroundWidth;
-  background.height = newBackgroundHeight;
-  background.x =
-    board.getLeftWallX() + (meterToPx(board.getWidth()) - background.width) / 2;
-  background.y =
-    board.getTopWallY() +
-    (meterToPx(board.getHeight()) - background.height) / 2 -
-    15;
-  board.getGraphics().addChild(background);
-
-  return board;  
-}
-
 async function main() {
   // init html
   const pixiContainer = document.getElementById("pixi");
@@ -87,6 +45,57 @@ async function main() {
       console.log(runtimeConfig);
     });
 
+  // Apply-Button logic
+  document
+    .getElementById("apply-button")
+    ?.addEventListener("click", function (event) {
+      event.preventDefault();
+      app.setRuntimeConfig(runtimeConfig);
+      console.log(runtimeConfig);
+      document.getElementById('close-offcanvas')?.click();
+      document.getElementById("pause-button")?.children[0].classList.toggle("bi-play-fill", app.getPause());
+      document.getElementById("pause-button")?.children[0].classList.toggle("bi-pause", !app.getPause());
+    });
+  
+    // Honey-Button logic
+    document
+      .getElementById("honey-button")
+      ?.addEventListener("click", function (event) {
+        event.preventDefault();
+        runtimeConfig.frictionCoef = 0.3;
+        app.setRuntimeConfig(runtimeConfig);
+        document.getElementById('close-offcanvas')?.click();
+        document.getElementById("pause-button")?.children[0].classList.toggle("bi-play-fill", app.getPause());
+        document.getElementById("pause-button")?.children[0].classList.toggle("bi-pause", !app.getPause());
+      });
+
+      // Ice-Button logic
+    document
+    .getElementById("ice-button")
+    ?.addEventListener("click", function (event) {
+      event.preventDefault();
+      runtimeConfig.frictionCoef = 0.002;
+      app.setRuntimeConfig(runtimeConfig);
+
+      
+
+      document.getElementById('close-offcanvas')?.click();
+      document.getElementById("pause-button")?.children[0].classList.toggle("bi-play-fill", app.getPause());
+      document.getElementById("pause-button")?.children[0].classList.toggle("bi-pause", !app.getPause());
+    });
+
+    // Table-Button logic
+    document
+      .getElementById("table-button")
+      ?.addEventListener("click", function (event) {
+        event.preventDefault();
+        runtimeConfig.frictionCoef = 0.02;
+        app.setRuntimeConfig(runtimeConfig);
+        document.getElementById('close-offcanvas')?.click();
+        document.getElementById("pause-button")?.children[0].classList.toggle("bi-play-fill", app.getPause());
+        document.getElementById("pause-button")?.children[0].classList.toggle("bi-pause", !app.getPause());
+      });
+
     const runtimeConfig = new RuntimeConfig();
             
     let gui = new dat.GUI({ autoPlace: false });
@@ -94,12 +103,12 @@ async function main() {
     if (customContainer) customContainer.appendChild(gui.domElement);
     // Define control elements here
     const guiPhysicsFolder = gui.addFolder('Физика');
-    guiPhysicsFolder.add(runtimeConfig, 'G').min(0.1).max(10).step(0.1).name('Постоянная G');
-    guiPhysicsFolder.add(runtimeConfig, 'frictionCoef').min(0.01).max(1).step(0.01).name('Коэф. трения');
+    guiPhysicsFolder.add(runtimeConfig, 'G').min(0.1).max(20).step(0.1).name('Постоянная G');
+    guiPhysicsFolder.add(runtimeConfig, 'frictionCoef').min(0.001).max(1).step(0.01).name('Коэф. трения');
     guiPhysicsFolder.open();
 
     const guiSimulationFolder = gui.addFolder('Симуляция');
-    guiSimulationFolder.add(runtimeConfig, 'ballsNumber').min(1).max(12).step(1).name('Кол-во шаров');
+    guiSimulationFolder.add(runtimeConfig, 'ballsNumber').min(1).max(15).step(1).name('Кол-во шаров');
     guiSimulationFolder.add(runtimeConfig, 'placementType', PlacementType).name('Тип расстановки');
     guiSimulationFolder.open();
 
