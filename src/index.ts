@@ -73,7 +73,9 @@ async function main() {
     .getElementById("pause-button")
     ?.addEventListener("click", function (event) {
       event.preventDefault();
-      app.tooglePause();
+      app.togglePause();
+      this.children[0].classList.toggle("bi-play-fill", app.getPause());
+      this.children[0].classList.toggle("bi-pause", !app.getPause());
     });
   
   // Restart-Button logic
