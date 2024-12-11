@@ -7,8 +7,8 @@ import { meterToPx, pxToMeter } from "../utils/px";
 import { Vector2D } from "../utils/vector2d";
 
 export enum PlacementType {
-  TRIANGLE,
-  RANDOM,
+  TRIANGLE = 'Треугольник',
+  RANDOM = 'Случайно',
 }
 
 export class PlacementService {

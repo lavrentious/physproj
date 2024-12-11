@@ -90,11 +90,6 @@ export class App {
             this.collisionResolver.resolveBallBoardCollision(this.board, this.board.getBallsList());
             this.collisionResolver.resolveBallsCollision(this.board.getBallsList());
         });
-        
-        let gui = new dat.GUI({ autoPlace: false });
-        let customContainer = document.getElementById('dat-gui-container');
-        if (customContainer) customContainer.appendChild(gui.domElement);
-        // Define control elements here
     }
 
     restart(){

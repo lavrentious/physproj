@@ -7,6 +7,7 @@ import { PlacementService, PlacementType } from "./services/placement_service";
 import { CollisionResolver } from "./utils/collision_resolver";
 import { meterToPx } from "./utils/px";
 import { App } from "./App";
+import { RuntimeConfig } from "./runtime_config";
 
 function createBalls(board: Board) {
   const placementService = new PlacementService(board);
@@ -81,12 +82,28 @@ async function main() {
     ?.addEventListener("click", function (event) {
       event.preventDefault();
       app.restart();
+      console.log(runtimeConfig);
     });
+
+    const runtimeConfig = new RuntimeConfig();
+            
+    let gui = new dat.GUI({ autoPlace: false });
+    let customContainer = document.getElementById('dat-gui-container');
+    if (customContainer) customContainer.appendChild(gui.domElement);
+    // Define control elements here
+    const guiPhysicsFolder = gui.addFolder('Физика');
+    guiPhysicsFolder.add(runtimeConfig, 'G').min(0.1).max(10).step(0.1).name('Постоянная G');
+    guiPhysicsFolder.add(runtimeConfig, 'frictionCoef').min(0.01).max(1).step(0.01).name('Коэф. трения');
+    guiPhysicsFolder.open();
+
+    const guiSimulationFolder = gui.addFolder('Симуляция');
+    guiSimulationFolder.add(runtimeConfig, 'ballsNumber').min(1).max(12).step(1).name('Кол-во шаров');
+    guiSimulationFolder.add(runtimeConfig, 'placementType', PlacementType).name('Тип расстановки');
+    guiSimulationFolder.open();
 
     const app = new App();
     await app.init(pixiContainer);
     app.run();
-    console.log(app.getBoard());
 }
 
 main();

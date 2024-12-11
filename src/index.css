@@ -50,3 +50,19 @@ main {
   flex-grow: 1;
   overflow: auto;
 }
+
+#dat-gui-container {
+  padding-top: 0;
+}
+
+.dg.main {
+  width: 100% !important;
+}
+
+.dg {
+  font-size: 14px !important;
+}
+
+.close-button.close-bottom {
+  display: none;
+}
