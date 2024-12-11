@@ -82,6 +82,14 @@ export class Board {
         this.graphics = this.graphics
         .circle(meterToPx(hole.coords.x), meterToPx(hole.coords.y), meterToPx(hole.radius))
         .fill(poolColors.tableBorder);
+
+        this.graphics = this.graphics
+        .circle(meterToPx(hole.coords.x), meterToPx(hole.coords.y), meterToPx(hole.radius * 0.85))
+        .fill("#2F1915");
+
+        this.graphics = this.graphics
+        .circle(meterToPx(hole.coords.x), meterToPx(hole.coords.y), meterToPx(hole.radius * 0.7))
+        .fill("#290B05");
       }
 
     this.graphics.interactive = true;
