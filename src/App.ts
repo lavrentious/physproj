@@ -128,7 +128,7 @@ export class App {
         this.application.ticker.start();
     }
 
-    tooglePause(){
+    togglePause(){
         if (this.isPause) this.resume();
         else this.pause();
     }
@@ -156,5 +156,9 @@ export class App {
 
     getApplication(){
         return this.application;
+    }
+
+    getPause(){
+        return this.isPause;
     }
 }
