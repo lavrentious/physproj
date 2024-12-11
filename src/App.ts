@@ -22,20 +22,19 @@ export class App {
     async init(pixiContainer: HTMLElement) {
         await this.initApplication(pixiContainer);
         await this.initBoard();
-        this.initPlacementService();
-        this.initCollisionResolver();
+
+        this.placementService = new PlacementService(this.board);
+        this.physicsRenderService = new PhysicsRenderService();
+        this.collisionResolver = new CollisionResolver();
 
         const ballsList = this.createBalls();
         this.board.addBalls(ballsList);
-
-        this.initPhysicsRenderService();
-
         this.application.stage.addChild(this.board.getGraphics());
     }
 
     async initApplication(pixiContainer: HTMLElement) {
         this.application = new Application();
-        await this.application.init({ background: "#999999", resizeTo: pixiContainer });
+        await this.application.init({ background: "#65717e", resizeTo: pixiContainer });
         this.application.ticker.maxFPS = 60;
         pixiContainer.appendChild(this.application.canvas);
     }
@@ -75,18 +74,6 @@ export class App {
             this.board.getGraphics().addChild(background);
     }
 
-    initPlacementService() {
-        this.placementService = new PlacementService(this.board);
-    }
-
-    initCollisionResolver() {
-        this.collisionResolver = new CollisionResolver();
-    }
-
-    initPhysicsRenderService(){
-        this.physicsRenderService = new PhysicsRenderService(this.board.getBallsList());
-    }
-
     createBalls() {
         return this.placementService.getPlacement(PlacementType.TRIANGLE, 10);
     }
@@ -114,7 +101,6 @@ export class App {
         this.board.removeBalls();
         const ballsList = this.createBalls();
         this.board.addBalls(ballsList);
-        // this.startPhysics();
         this.resume();
     }
 
@@ -133,17 +119,17 @@ export class App {
         else this.pause();
     }
 
-    stopPhysics(){
+    disablePhysics(){
         this.showPhysics = false;
     }
 
-    startPhysics(){
+    enablePhysics(){
         this.showPhysics = true;
     }
 
     togglePhysics(){
-        if (this.showPhysics) this.stopPhysics();
-        else this.startPhysics();
+        if (this.showPhysics) this.disablePhysics();
+        else this.enablePhysics();
     }
 
     getPhysics(){
