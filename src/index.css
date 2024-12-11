@@ -30,10 +30,19 @@ main {
   margin-left: 5px;
 }
 
+.navbar-btn {
+  padding: 7px;
+}
+
+.bi {
+  width: 20px;
+  height: 20px;
+}
+
 .content {
   display: flex;
   flex: 1; /* Take all remaining space */
-  background-color: #999999;
+  background-color: #65717e;
   padding: 10px;
 }
 
