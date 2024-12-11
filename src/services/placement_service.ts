@@ -75,10 +75,11 @@ export class PlacementService {
       let newX = 0;
       let newY = 0;
       do{
+        hasCollision = 0;
         newX = pxToMeter(this.board.getLeftWallX()) + Math.random() * (this.board.getWidth() - 2 * config.BALL_RADIUS_M) + config.BALL_RADIUS_M;
         newY = pxToMeter(this.board.getTopWallY()) + Math.random() * (this.board.getHeight() - 2 * config.BALL_RADIUS_M) + config.BALL_RADIUS_M;
         result.forEach(ball => {
-          if (ball.position.subtract(new Vector2D(newX, newY)).magnitude() <= 2 * config.BALL_RADIUS_M){
+          if (Math.hypot(ball.position.x - newX, ball.position.y - newY) <= 2 * config.BALL_RADIUS_M){
             hasCollision = 1;
           }
         });
