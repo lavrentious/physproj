@@ -30,7 +30,7 @@ export class Ball {
   }
 
   
-  update(deltaTime: number) {
+  update(deltaTime: number, friction: number, g: number) {
     if (this.velocity.magnitude() < config.BALL_VELOCITY_THRESHOLD) {
       this.velocity = new Vector2D(0, 0);
       return;
@@ -38,8 +38,13 @@ export class Ball {
 
     const deltaVelocity = this.velocity
       .normalize()
-      .scale((config.BALL_FRICTION_COEF * config.G * deltaTime) / 1000);
-    this.velocity = this.velocity.subtract(deltaVelocity);
+      .scale((friction * g * deltaTime) / 1000);
+    if (deltaVelocity.magnitude() > this.velocity.magnitude()) {
+      this.velocity = new Vector2D(0, 0);
+    }
+    else{
+      this.velocity = this.velocity.subtract(deltaVelocity);
+    }
 
     this.position = this.position.add(this.velocity);
 
