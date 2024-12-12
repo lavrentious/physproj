@@ -28,7 +28,7 @@ export class Ball {
       x: meterToPx(this.position.x),
       y: meterToPx(this.position.y),
       alpha: 1,
-
+      eventMode: "none",
       style: {
         fontFamily: "monospace",
         fontSize: 12,
