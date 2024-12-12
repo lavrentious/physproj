@@ -4,7 +4,8 @@ export const config = {
   // Physics
   G: 9.8,
   // Rendering
-  PX_PER_METER: 400,
+  // PX_PER_METER: 400,
+  PX_PER_METER: (window.innerWidth * 0.8) / 2.84,
   // Ball
   BALL_RADIUS_M: 0.034,
   BALL_FRICTION_COEF: 0.02,
