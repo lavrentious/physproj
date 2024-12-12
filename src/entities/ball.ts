@@ -1,4 +1,4 @@
-import { ColorSource, Graphics } from "pixi.js";
+import { ColorSource, Graphics, Text } from "pixi.js";
 import { config } from "../config";
 import { rotate } from "../utils/math_funcs";
 import { meterToPx } from "../utils/px";
@@ -9,6 +9,8 @@ export class Ball {
   public velocity: Vector2D;
   public id: number;
   public radius: number;
+
+  private infoGraphics: Text;
 
   constructor(
     public position: Vector2D,
@@ -21,12 +23,37 @@ export class Ball {
       .circle(0, 0, meterToPx(this.radius))
       .fill(this.color);
 
+    this.infoGraphics = new Text({
+      text: `${this.velocity.magnitude().toFixed(3)} м/с`,
+      x: meterToPx(this.position.x),
+      y: meterToPx(this.position.y),
+      alpha: 1,
+
+      style: {
+        fontFamily: "monospace",
+        fontSize: 12,
+      },
+    });
+
     this.render();
+  }
+
+  public getInfoGraphics() {
+    return this.infoGraphics;
   }
 
   render() {
     this.graphics.x = meterToPx(this.position.x);
     this.graphics.y = meterToPx(this.position.y);
+
+    this.infoGraphics.x = meterToPx(this.position.x);
+    this.infoGraphics.y = meterToPx(this.position.y);
+    if (this.velocity.magnitude() < config.BALL_VELOCITY_THRESHOLD) {
+      this.infoGraphics.alpha = 0;
+    } else {
+      this.infoGraphics.alpha = 1;
+      this.infoGraphics.text = `${this.velocity.magnitude().toFixed(3)} м/с`;
+    }
   }
 
   update(deltaTime: number, friction: number, g: number) {

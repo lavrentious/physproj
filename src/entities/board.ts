@@ -177,6 +177,8 @@ export class Board {
     ballGraphics.on("pointerup", (event) => this.onDragEnd(event));
 
     this.graphics.addChild(ballGraphics);
+    ballGraphics.addChild(ball.getInfoGraphics());
+    this.graphics.addChild(ball.getInfoGraphics());
   }
 
   addBalls(balls: Ball[]) {
@@ -188,6 +190,7 @@ export class Board {
   removeBall(ball: Ball) {
     this.balls.delete(ball);
     this.graphics.removeChild(ball.getGraphics());
+    this.graphics.removeChild(ball.getInfoGraphics());
   }
 
   removeBalls() {

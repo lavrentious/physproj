@@ -142,10 +142,16 @@ export class App {
   }
 
   disablePhysics() {
+    for (const ball of this.board.getBallsList()) {
+      this.board.getGraphics().removeChild(ball.getInfoGraphics());
+    }
     this.showPhysics = false;
   }
 
   enablePhysics() {
+    for (const ball of this.board.getBallsList()) {
+      this.board.getGraphics().addChild(ball.getInfoGraphics());
+    }
     this.showPhysics = true;
   }
 
