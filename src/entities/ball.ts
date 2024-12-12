@@ -29,7 +29,6 @@ export class Ball {
     this.graphics.y = meterToPx(this.position.y);
   }
 
-  
   update(deltaTime: number, friction: number, g: number) {
     if (this.velocity.magnitude() < config.BALL_VELOCITY_THRESHOLD) {
       this.velocity = new Vector2D(0, 0);
@@ -41,8 +40,7 @@ export class Ball {
       .scale((friction * g * deltaTime) / 1000);
     if (deltaVelocity.magnitude() > this.velocity.magnitude()) {
       this.velocity = new Vector2D(0, 0);
-    }
-    else{
+    } else {
       this.velocity = this.velocity.subtract(deltaVelocity);
     }
 

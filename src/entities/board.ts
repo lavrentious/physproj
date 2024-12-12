@@ -42,25 +42,40 @@ export class Board {
         config.HOLE_RADIUS_M,
       ),
       new Hole(
-        new Vector2D(pxToMeter(this.leftTopXPx) + this.width, pxToMeter(this.leftTopYPx) + this.height),
+        new Vector2D(
+          pxToMeter(this.leftTopXPx) + this.width,
+          pxToMeter(this.leftTopYPx) + this.height,
+        ),
         config.HOLE_RADIUS_M,
       ),
       new Hole(
-        new Vector2D(pxToMeter(this.leftTopXPx), pxToMeter(this.leftTopYPx) + this.height),
+        new Vector2D(
+          pxToMeter(this.leftTopXPx),
+          pxToMeter(this.leftTopYPx) + this.height,
+        ),
         config.HOLE_RADIUS_M,
       ),
       new Hole(
-        new Vector2D(pxToMeter(this.leftTopXPx) + this.width, pxToMeter(this.leftTopYPx)),
+        new Vector2D(
+          pxToMeter(this.leftTopXPx) + this.width,
+          pxToMeter(this.leftTopYPx),
+        ),
         config.HOLE_RADIUS_M,
       ),
       new Hole(
-        new Vector2D(pxToMeter(this.leftTopXPx) + this.width / 2, pxToMeter(this.leftTopYPx + 8) + this.height),
+        new Vector2D(
+          pxToMeter(this.leftTopXPx) + this.width / 2,
+          pxToMeter(this.leftTopYPx + 8) + this.height,
+        ),
         config.HOLE_RADIUS_M,
       ),
       new Hole(
-        new Vector2D(pxToMeter(this.leftTopXPx) + this.width / 2, pxToMeter(this.leftTopYPx - 8)),
+        new Vector2D(
+          pxToMeter(this.leftTopXPx) + this.width / 2,
+          pxToMeter(this.leftTopYPx - 8),
+        ),
         config.HOLE_RADIUS_M,
-      )
+      ),
     ];
 
     this.graphics = new Graphics()
@@ -79,19 +94,31 @@ export class Board {
       .fill(poolColors.table);
 
     // draw holes
-      for (const hole of this.holes) {
-        this.graphics = this.graphics
-        .circle(meterToPx(hole.coords.x), meterToPx(hole.coords.y), meterToPx(hole.radius))
+    for (const hole of this.holes) {
+      this.graphics = this.graphics
+        .circle(
+          meterToPx(hole.coords.x),
+          meterToPx(hole.coords.y),
+          meterToPx(hole.radius),
+        )
         .fill(poolColors.tableBorder);
 
-        this.graphics = this.graphics
-        .circle(meterToPx(hole.coords.x), meterToPx(hole.coords.y), meterToPx(hole.radius * 0.85))
+      this.graphics = this.graphics
+        .circle(
+          meterToPx(hole.coords.x),
+          meterToPx(hole.coords.y),
+          meterToPx(hole.radius * 0.85),
+        )
         .fill("#2F1915");
 
-        this.graphics = this.graphics
-        .circle(meterToPx(hole.coords.x), meterToPx(hole.coords.y), meterToPx(hole.radius * 0.7))
+      this.graphics = this.graphics
+        .circle(
+          meterToPx(hole.coords.x),
+          meterToPx(hole.coords.y),
+          meterToPx(hole.radius * 0.7),
+        )
         .fill("#290B05");
-      }
+    }
 
     this.graphics.interactive = true;
     this.graphics.on("pointermove", (event) => this.onDragMove(event));
@@ -102,7 +129,12 @@ export class Board {
   processHoleCollision(ball: Ball) {
     for (const hole of this.holes) {
       // console.log(Math.hypot(hole.coords.x - ball.position.x, hole.coords.y - ball.position.y));
-      if (Math.hypot(hole.coords.x - ball.position.x, hole.coords.y - ball.position.y) < hole.radius) {
+      if (
+        Math.hypot(
+          hole.coords.x - ball.position.x,
+          hole.coords.y - ball.position.y,
+        ) < hole.radius
+      ) {
         this.removeBall(ball);
       }
     }
@@ -158,10 +190,10 @@ export class Board {
     this.graphics.removeChild(ball.getGraphics());
   }
 
-  removeBalls() { 
+  removeBalls() {
     this.balls.forEach((ball) => {
       this.removeBall(ball);
-    })
+    });
   }
 
   getBalls() {

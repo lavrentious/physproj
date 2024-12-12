@@ -7,8 +7,8 @@ import { meterToPx, pxToMeter } from "../utils/px";
 import { Vector2D } from "../utils/vector2d";
 
 export enum PlacementType {
-  TRIANGLE = 'Треугольник',
-  RANDOM = 'Случайно',
+  TRIANGLE = "Треугольник",
+  RANDOM = "Случайно",
 }
 
 export class PlacementService {
@@ -28,11 +28,11 @@ export class PlacementService {
     return result;
   }
 
-  public getStartBall(){
+  public getStartBall() {
     return this.createBall(
-      pxToMeter(this.board.getLeftWallX()) + config.BOARD_WIDTH_M / 4, 
-      pxToMeter(this.board.getTopWallY()) + config.BOARD_HEIGHT_M / 2, 
-      poolColors.cueBallColor
+      pxToMeter(this.board.getLeftWallX()) + config.BOARD_WIDTH_M / 4,
+      pxToMeter(this.board.getTopWallY()) + config.BOARD_HEIGHT_M / 2,
+      poolColors.cueBallColor,
     );
   }
 
@@ -40,25 +40,27 @@ export class PlacementService {
     const OFFSET_M = pxToMeter(4);
 
     const startPositionPixels = new Vector2D(
-        this.board.getLeftWallX() + 3/4 * meterToPx(this.board.getWidth()),
-        this.board.getTopWallY() + 1/2 * meterToPx(this.board.getHeight())
+      this.board.getLeftWallX() + (3 / 4) * meterToPx(this.board.getWidth()),
+      this.board.getTopWallY() + (1 / 2) * meterToPx(this.board.getHeight()),
     );
     const result = [];
 
     let curRow = 1;
     let curPos = 1;
-    for (let i = 0; i < amount; ++i){
+    for (let i = 0; i < amount; ++i) {
       // create new ball
       const currentBall = this.createBall(
-        pxToMeter(startPositionPixels.x) + (curRow - 1) * (2 * config.BALL_RADIUS_M + OFFSET_M),
-        pxToMeter(startPositionPixels.y) + (curPos - 1) * (2 * config.BALL_RADIUS_M + OFFSET_M),
+        pxToMeter(startPositionPixels.x) +
+          (curRow - 1) * (2 * config.BALL_RADIUS_M + OFFSET_M),
+        pxToMeter(startPositionPixels.y) +
+          (curPos - 1) * (2 * config.BALL_RADIUS_M + OFFSET_M),
         poolColors.balls[i % poolColors.balls.length],
-      )
+      );
       result.push(currentBall);
 
       // change row & pos
       curPos++;
-      if (curPos > curRow){
+      if (curPos > curRow) {
         curRow += 1;
         curPos = 1;
         startPositionPixels.y -= meterToPx(config.BALL_RADIUS_M);
@@ -74,17 +76,25 @@ export class PlacementService {
       let hasCollision = 0;
       let newX = 0;
       let newY = 0;
-      do{
+      do {
         hasCollision = 0;
-        newX = pxToMeter(this.board.getLeftWallX()) + Math.random() * (this.board.getWidth() - 2 * config.BALL_RADIUS_M) + config.BALL_RADIUS_M;
-        newY = pxToMeter(this.board.getTopWallY()) + Math.random() * (this.board.getHeight() - 2 * config.BALL_RADIUS_M) + config.BALL_RADIUS_M;
-        result.forEach(ball => {
-          if (Math.hypot(ball.position.x - newX, ball.position.y - newY) <= 2 * config.BALL_RADIUS_M){
+        newX =
+          pxToMeter(this.board.getLeftWallX()) +
+          Math.random() * (this.board.getWidth() - 2 * config.BALL_RADIUS_M) +
+          config.BALL_RADIUS_M;
+        newY =
+          pxToMeter(this.board.getTopWallY()) +
+          Math.random() * (this.board.getHeight() - 2 * config.BALL_RADIUS_M) +
+          config.BALL_RADIUS_M;
+        result.forEach((ball) => {
+          if (
+            Math.hypot(ball.position.x - newX, ball.position.y - newY) <=
+            2 * config.BALL_RADIUS_M
+          ) {
             hasCollision = 1;
           }
         });
-      }
-      while (hasCollision);
+      } while (hasCollision);
 
       const currentBall = this.createBall(
         newX,
@@ -103,9 +113,6 @@ export class PlacementService {
     positionYMeters: number,
     color: ColorSource,
   ): Ball {
-    return new Ball(
-      new Vector2D(positionXMeters, positionYMeters),
-      color,
-    );
+    return new Ball(new Vector2D(positionXMeters, positionYMeters), color);
   }
 }

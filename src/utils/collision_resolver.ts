@@ -19,7 +19,7 @@ export class CollisionResolver {
           ) {
             continue;
           }
-          
+
           data[i].collide(data[j]);
 
           if (!this.collisionsLookup.has(data[i].id)) {
@@ -49,7 +49,7 @@ export class CollisionResolver {
         data[i].velocity = new Vector2D(
           redirectionVector.x * data[i].velocity.x,
           redirectionVector.y * data[i].velocity.y,
-        )
+        );
       }
     }
   }

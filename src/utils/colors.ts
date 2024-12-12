@@ -11,7 +11,7 @@ export const poolColors = {
     0x27ae60, // lush green
     0x8e44ad, // rich purple
     0xe74c3c, // vibrant red
-    0xf1c40f,  // sunflower
+    0xf1c40f, // sunflower
     0xffb31a, // bright orange
     0xff99cc, // soft pink
     0x99ccff, // pale blue

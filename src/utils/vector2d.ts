@@ -1,44 +1,47 @@
 export class Vector2D {
-    constructor(public x: number, public y: number) {}
+  constructor(
+    public x: number,
+    public y: number,
+  ) {}
 
-    // Add another vector to this vector
-    add(other: Vector2D): Vector2D {
-        return new Vector2D(this.x + other.x, this.y + other.y);
-    }
+  // Add another vector to this vector
+  add(other: Vector2D): Vector2D {
+    return new Vector2D(this.x + other.x, this.y + other.y);
+  }
 
-    // Subtract another vector from this vector
-    subtract(other: Vector2D): Vector2D {
-        return new Vector2D(this.x - other.x, this.y - other.y);
-    }
+  // Subtract another vector from this vector
+  subtract(other: Vector2D): Vector2D {
+    return new Vector2D(this.x - other.x, this.y - other.y);
+  }
 
-    // Scale the vector by a scalar value
-    scale(scalar: number): Vector2D {
-        return new Vector2D(this.x * scalar, this.y * scalar);
-    }
+  // Scale the vector by a scalar value
+  scale(scalar: number): Vector2D {
+    return new Vector2D(this.x * scalar, this.y * scalar);
+  }
 
-    // Calculate the magnitude (length) of the vector
-    magnitude(): number {
-        return Math.sqrt(this.x ** 2 + this.y ** 2);
-    }
+  // Calculate the magnitude (length) of the vector
+  magnitude(): number {
+    return Math.sqrt(this.x ** 2 + this.y ** 2);
+  }
 
-    // Normalize the vector (make it unit length)
-    normalize(): Vector2D {
-        const mag = this.magnitude();
-        if (mag === 0) {
-            throw new Error("Cannot normalize a zero vector");
-        }
-        return this.scale(1 / mag);
+  // Normalize the vector (make it unit length)
+  normalize(): Vector2D {
+    const mag = this.magnitude();
+    if (mag === 0) {
+      throw new Error("Cannot normalize a zero vector");
     }
+    return this.scale(1 / mag);
+  }
 
-    // Dot product with another vector
-    dot(other: Vector2D): number {
-        return this.x * other.x + this.y * other.y;
-    }
+  // Dot product with another vector
+  dot(other: Vector2D): number {
+    return this.x * other.x + this.y * other.y;
+  }
 
-    // String representation of the vector
-    toString(): string {
-        return `(${this.x}, ${this.y})`;
-    }
+  // String representation of the vector
+  toString(): string {
+    return `(${this.x}, ${this.y})`;
+  }
 }
 
 // Example usage:
