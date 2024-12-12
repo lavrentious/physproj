@@ -81,7 +81,6 @@ class Index {
     if (frictionCoef) {
       this.runtimeConfig.frictionCoef = frictionCoef;
     }
-    console.log("new friction", this.runtimeConfig.frictionCoef);
 
     this.datGui.updateDisplay();
     this.app.setRuntimeConfig(this.runtimeConfig);

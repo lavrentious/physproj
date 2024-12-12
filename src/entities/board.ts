@@ -167,7 +167,6 @@ export class Board {
   }
 
   addBall(ball: Ball) {
-    console.log("adding ball");
     this.balls.add(ball);
 
     const ballGraphics = ball.getGraphics();
@@ -234,7 +233,6 @@ export class Board {
     if (ball.velocity.magnitude() !== 0) {
       return;
     }
-    console.log("drag start");
     this.draggedBall = ball;
     this.dragStart = new Vector2D(
       meterToPx(ball.position.x),
@@ -284,9 +282,7 @@ export class Board {
         pxToMeter(dragVectorPx.x),
         pxToMeter(dragVectorPx.y),
       );
-      console.log("launching ball", dragVector);
       const multiplier = -0.5 * Math.log(1 + dragVector.magnitude());
-      console.log({ multiplier });
 
       this.draggedBall.velocity = dragVector.scale(multiplier);
     }
@@ -295,7 +291,6 @@ export class Board {
   }
 
   dragReset() {
-    console.log("RESETTING DRAG");
     this.draggedBall = null;
     this.dragStart = null;
     this.dragEnd = null;
@@ -308,7 +303,6 @@ export class Board {
 
   renderDragPreview() {
     if (!this.dragStart || !this.dragEnd || !this.dragPreview) return;
-    console.log("line to", this.dragEnd.x, this.dragEnd.y);
     this.dragPreview.clear();
     this.dragPreview.moveTo(this.dragStart.x, this.dragStart.y);
     this.dragPreview.lineTo(this.dragEnd.x, this.dragEnd.y);
