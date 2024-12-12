@@ -64,15 +64,16 @@ export class Board {
     ];
 
     this.graphics = new Graphics()
-      .rect(
+      .roundRect(
         leftTopXPx,
         leftTopYPx,
         meterToPx(this.width),
         meterToPx(this.height),
+        10,
       )
       .stroke({
         color: poolColors.tableBorder,
-        width: 16,
+        width: 36,
         alignment: 0,
       })
       .fill(poolColors.table);
