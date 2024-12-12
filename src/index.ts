@@ -62,8 +62,6 @@ class Index {
       event.preventDefault();
     }
     this.app.togglePause();
-    console.log(this.app.getPause());
-
     this.pauseButton.children[0].classList.toggle(
       "bi-play-fill",
       this.app.getPause(),
@@ -183,12 +181,24 @@ class Index {
     guiSimulationFolder.open();
   }
 
+  private initHotkeys() {
+    // pause with space
+    window.addEventListener("keypress", (event) => {
+      if (event.code === "Space") {
+        this.pauseButton.blur();
+        this.pauseButtonClickListener();
+      }
+    });
+  }
+
   public async init() {
     this.initListeners();
     this.initDatGui();
 
     await this.app.init(this.pixiContainer);
     this.app.run();
+
+    this.initHotkeys();
   }
 }
 

@@ -35,13 +35,6 @@ export class App {
     const ballsList = this.createBalls();
     this.board.addBalls(ballsList);
     this.application.stage.addChild(this.board.getGraphics());
-
-    // init event listeners
-    window.addEventListener("keydown", (event) => {
-      if (event.key === " ") {
-        this.togglePause();
-      }
-    });
   }
 
   async initApplication(pixiContainer: HTMLElement) {
